@@ -12,36 +12,30 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserService = exports.setExpirationDate = void 0;
+exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
 const schema_1 = require("../schema");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
-const shared_1 = require("../shared");
 const crypto_1 = require("crypto");
-function setExpirationDate(days) {
-    const expiredAt = new Date();
-    expiredAt.setDate(expiredAt.getDate() + days);
-    return expiredAt;
+function setExpirationTime(days = 0) {
+    const today = new Date();
+    return new Date(today.setDate(today.getDate() + days));
 }
-exports.setExpirationDate = setExpirationDate;
 let UserService = class UserService {
     constructor(userModel) {
         this.userModel = userModel;
     }
     async createUser(body) {
-        const isExists = await this.userModel.findOne({
-            email: body.email,
-        });
-        if (isExists) {
-            throw new shared_1.UserAlreadyExists(`This ${body.email} email is already in use`);
+        const existingUser = await this.userModel.findOne({ email: body.email });
+        if (existingUser) {
+            throw new Error(`User with email ${body.email} already exists`);
         }
-        const creationTime = setExpirationDate(0);
         body.token = (0, crypto_1.randomUUID)();
-        body.creationTime = creationTime;
-        const doc = new this.userModel(body);
-        const user = await doc.save();
-        return user.toObject();
+        body.creationTime = setExpirationTime();
+        const newUser = new this.userModel(body);
+        await newUser.save();
+        return newUser.toObject();
     }
     async login(body) {
         const user = await this.userModel.findOne({
@@ -49,7 +43,7 @@ let UserService = class UserService {
             password: body.password,
         });
         if (!user) {
-            throw new shared_1.UserNotFound(`User with email ${body.email} was not found`);
+            throw new Error(`No user found with email ${body.email}`);
         }
         user.token = (0, crypto_1.randomUUID)();
         await user.save();
@@ -57,7 +51,7 @@ let UserService = class UserService {
     }
     async getAllUsers() {
         const users = await this.userModel.find({});
-        return users.map((user) => user.toObject());
+        return users.map(user => user.toObject());
     }
 };
 exports.UserService = UserService;

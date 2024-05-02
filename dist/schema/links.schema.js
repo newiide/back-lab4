@@ -34,5 +34,4 @@ exports.Links = Links = __decorate([
     (0, mongoose_1.Schema)({ collection: 'links' })
 ], Links);
 exports.LinksSchema = mongoose_1.SchemaFactory.createForClass(Links);
-exports.LinksSchema.index({ expiredAt: 1 }, { expireAfterSeconds: 0 });
 //# sourceMappingURL=links.schema.js.map

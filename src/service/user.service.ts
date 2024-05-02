@@ -3,10 +3,9 @@ import { LoginDto, UserDto } from '../models';
 import { UserDoc, Users } from '../schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { UserAlreadyExists, UserNotFound } from '../shared';
 import { randomUUID } from 'crypto';
 
-function setExpirationTime(days=0) {
+function setExpirationTime(days = 0) {
   const today = new Date();
   return new Date(today.setDate(today.getDate() + days));
 }
@@ -19,22 +18,17 @@ export class UserService {
   ) {}
 
   async createUser(body: UserDto) {
-    const isExists = await this.userModel.findOne({
-      email: body.email,
-    });
-
-    if (isExists) {
-      throw new UserAlreadyExists(`This ${body.email} email is already in use`);
+    const existingUser = await this.userModel.findOne({ email: body.email });
+    if (existingUser) {
+      throw new Error(`User with email ${body.email} already exists`);
     }
-    const creationTime = setExpirationTime()
+
     body.token = randomUUID();
-    
-    body.creationTime = creationTime
+    body.creationTime = setExpirationTime();  
 
-    const doc = new this.userModel(body);
-
-    const user = await doc.save();
-    return user.toObject();
+    const newUser = new this.userModel(body);
+    await newUser.save();
+    return newUser.toObject();  
   }
 
   async login(body: LoginDto) {
@@ -44,18 +38,16 @@ export class UserService {
     });
 
     if (!user) {
-      throw new UserNotFound(`User with email ${body.email} was not found`);
+      throw new Error(`No user found with email ${body.email}`);
     }
 
-    user.token = randomUUID();
+    user.token = randomUUID();  
     await user.save();
-
-    return user.toObject();
+    return user.toObject();  
   }
 
   async getAllUsers() {
     const users = await this.userModel.find({});
-
-    return users.map((user) => user.toObject());
+    return users.map(user => user.toObject());  
   }
 }

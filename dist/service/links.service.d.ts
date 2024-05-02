@@ -34,5 +34,5 @@ export declare class LinkService {
         _id: import("mongoose").Types.ObjectId;
     }>;
     getExpired(query: any, user: any): Promise<any[]>;
-    getLink(cut: any, user: any): Promise<string>;
+    getLink(shortLink: any): Promise<string>;
 }

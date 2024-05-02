@@ -18,78 +18,46 @@ const links_schema_1 = require("../schema/links.schema");
 const mongoose_1 = require("mongoose");
 const mongoose_2 = require("@nestjs/mongoose");
 const crypto_1 = require("crypto");
-const shared_1 = require("../shared");
-function setExpirationDate(days) {
-    const expiredAt = new Date();
-    expiredAt.setDate(expiredAt.getDate() + days);
-    return expiredAt;
+function setExpirationTime(days = 0) {
+    const today = new Date();
+    return new Date(today.setDate(today.getDate() + days));
 }
 let LinkService = class LinkService {
     constructor(linkModel) {
         this.linkModel = linkModel;
     }
     async createLink(body) {
-        const shortLink = (0, crypto_1.randomUUID)().replace(/-/g, '').slice(0, -17);
-        const days = 5;
-        const expiredAt = setExpirationDate(days);
-        const doc = new this.linkModel({
-            ...body,
-            originalLink: body.originalLink,
-            shortLink: shortLink,
-            expiredAt: expiredAt,
+        const shorterLink = (0, crypto_1.randomUUID)().slice(0, 8);
+        const expiredAt = setExpirationTime(5);
+        const linkDoc = new this.linkModel({
+            ...body, originalLink: body.originalLink, shortLink: shorterLink, expiredAt
         });
-        const links = await doc.save();
-        return links;
+        return linkDoc.save();
     }
     async getExpired(query, user) {
         const data = JSON.parse(query.expiredAt);
         if (!data.gt && !data.lt) {
-            throw new shared_1.NoExpiration('There is any expiration date mentions, please try again!');
+            throw new Error('No expiration date provided.');
         }
-        if (data.gt && data.lt) {
-            const ltAndGtExpirationDate = await this.linkModel.aggregate([
-                {
-                    $match: {
-                        email: user.email,
-                        expiredAt: { $gt: new Date(data.gt), $lt: new Date(data.lt) }
-                    },
-                },
-            ]);
-            return ltAndGtExpirationDate;
-        }
-        if (data.gt) {
-            const gtExpirationDate = await this.linkModel.aggregate([
-                {
-                    $match: {
-                        email: user.email,
-                        expiredAt: { $gt: new Date(data.gt) },
-                    },
-                },
-            ]);
-            return gtExpirationDate;
-        }
-        if (data.lt) {
-            const ltExpirationDate = await this.linkModel.aggregate([
-                {
-                    $match: {
-                        email: user.email,
-                        expiredAt: { $lt: new Date(data.lt) },
-                    },
-                },
-            ]);
-            return ltExpirationDate;
-        }
+        const filters = { email: user.email };
+        if (data.gt)
+            filters['expiredAt.$gt'] = new Date(data.gt);
+        if (data.lt)
+            filters['expiredAt.$lt'] = new Date(data.lt);
+        return this.linkModel.aggregate([
+            { $match: filters },
+        ]);
     }
-    async getLink(cut, user) {
-        const originalLink = await this.linkModel.findOne({ shortLink: cut });
-        const now = setExpirationDate(0);
-        if (originalLink.expiredAt < now) {
-            throw new shared_1.ExpiredLink('Link was expired');
+    async getLink(shortLink) {
+        const linkDoc = await this.linkModel.findOne({ shortLink });
+        if (!linkDoc) {
+            throw new Error('Short link was not found');
         }
-        if (!originalLink) {
-            throw new shared_1.LinkNotFound('Short link was not found');
+        const today = setExpirationTime();
+        if (linkDoc.expiredAt < today) {
+            throw new Error('Link has expired');
         }
-        return originalLink.originalLink;
+        return linkDoc.originalLink;
     }
 };
 exports.LinkService = LinkService;

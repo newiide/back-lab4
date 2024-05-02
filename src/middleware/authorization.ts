@@ -3,7 +3,8 @@ import {
   Injectable,
   NestMiddleware,
   UnauthorizedException,
-} from '@nestjs/common';
+} 
+from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDoc, UserLeanDoc, Users } from '../schema';
 import { Model } from 'mongoose';
@@ -25,7 +26,7 @@ export class UserAuthorizationMiddleware implements NestMiddleware {
 
     if (!authorization) {
       throw new UnauthorizedException(
-        `User do not provide authorization token`,
+        `User don't provide authorization token`,
       );
     }
 
@@ -33,7 +34,7 @@ export class UserAuthorizationMiddleware implements NestMiddleware {
 
     if (!user) {
       throw new BadRequestException(
-        `User with such authorization token was not found`,
+        `User with this token was not found`,
       );
     }
 

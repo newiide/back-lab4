@@ -25,7 +25,6 @@
 import { LoginDto, UserDto } from '../models';
 import { UserDoc, Users } from '../schema';
 import { Model } from 'mongoose';
-export declare function setExpirationDate(days: any): Date;
 export declare class UserService {
     private readonly userModel;
     constructor(userModel: Model<UserDoc>);
