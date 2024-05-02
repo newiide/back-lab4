@@ -5,7 +5,12 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
 import { LinkNotFound, ExpiredLink, NoExpiration } from '../shared';
-import { setExpirationDate } from '../helper';
+
+function setExpirationDate(days) {
+  const expiredAt = new Date()
+  expiredAt.setDate(expiredAt.getDate() + days);
+  return expiredAt
+}
 
 @Injectable()
 export class LinkService {
