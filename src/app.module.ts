@@ -1,12 +1,12 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
-import { UsersController, AdminController, DriverController  } from './controllers/users.controller';
+import { UsersController } from './controllers/users.controller';
 import { UserService } from './service/user.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { AddressesSchema, Addresses, Orders, OrdersSchema, UserSchema, Users } from './schema';
-import { UserAuthorizationMiddleware } from './midellware/userAuthorization.middleware';
-import { OrdersController } from './controllers/orders.controller';
-import { OrderService } from './service';
-import { AddressesService} from './service/addresses.service';
+import { Links, LinksSchema } from './schema/links.schema';
+import { UserSchema, Users } from './schema';
+import { UserAuthorizationMiddleware } from './middleware/authorization';
+import { OrdersController } from './controllers/links.controller';
+import { LinkService } from './service/links.service';
 
 @Module({
   imports: [
@@ -20,20 +20,19 @@ import { AddressesService} from './service/addresses.service';
         schema: UserSchema,
       },
       {
-        name: Orders.name,
-        schema: OrdersSchema,
+        name: Links.name,
+        schema: LinksSchema,
       },
-      {
-        name: Addresses.name,
-        schema: AddressesSchema
-      }
     ]),
   ],
-  controllers: [UsersController, OrdersController, AdminController, DriverController],
-  providers: [UserService, OrderService, AddressesService],
+
+  controllers: [UsersController, OrdersController],
+
+  providers: [UserService, LinkService],
+
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(UserAuthorizationMiddleware).forRoutes('/orders');
+    consumer .apply(UserAuthorizationMiddleware) .exclude('/links/:cut') .forRoutes('/links');
   }
 }

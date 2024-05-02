@@ -13,7 +13,7 @@ import {
 import { UserService } from '../service';
 import { LoginDto, UserDto, AdminDto, DriverDto } from '../models';
 import { UserAlreadyExists, UserNotFound } from '../shared'; 
-import { UserAuthorizationMiddleware } from 'src/midellware/userAuthorization.middleware';
+import { UserAuthorizationMiddleware } from 'src/middleware/userAuthorization.middleware';
 
 @Controller({ path: '/users' })
 export class UsersController {
