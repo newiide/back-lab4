@@ -73,7 +73,7 @@ export class OrdersController {
     @Req() req: Request & { user: UserLeanDoc },
   ) {
     try {
-      const { user } = req;
+      const { } = req;
       const originalLink = await this.linkService.getLink(cut);
       return res.redirect(originalLink);
     } catch (err) {
