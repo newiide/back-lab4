@@ -12,12 +12,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DriverController = exports.AdminController = exports.UsersController = void 0;
+exports.UsersController = void 0;
 const common_1 = require("@nestjs/common");
 const service_1 = require("../service");
 const models_1 = require("../models");
 const shared_1 = require("../shared");
-const userAuthorization_middleware_1 = require("../midellware/userAuthorization.middleware");
 let UsersController = class UsersController {
     constructor(userService) {
         this.userService = userService;
@@ -37,7 +36,7 @@ let UsersController = class UsersController {
     async login(body) {
         try {
             const result = await this.userService.login(body);
-            return { token: result };
+            return result;
         }
         catch (err) {
             if (err instanceof shared_1.UserNotFound) {
@@ -75,71 +74,4 @@ exports.UsersController = UsersController = __decorate([
     (0, common_1.Controller)({ path: '/users' }),
     __metadata("design:paramtypes", [service_1.UserService])
 ], UsersController);
-let AdminController = class AdminController {
-    constructor(userService) {
-        this.userService = userService;
-    }
-    async createAdmin(body, req) {
-        const { authorization } = req.headers;
-        if (authorization !== 'Password') {
-            throw new common_1.UnauthorizedException('Unauthorized access');
-        }
-        try {
-            body.role = 'Admin';
-            const result = await this.userService.CreateAdmin(body);
-            return result;
-        }
-        catch (err) {
-            if (err instanceof shared_1.UserAlreadyExists) {
-                throw new common_1.BadRequestException(err.message);
-            }
-            throw err;
-        }
-    }
-};
-exports.AdminController = AdminController;
-__decorate([
-    (0, common_1.Post)('/'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [models_1.AdminDto,
-        Request]),
-    __metadata("design:returntype", Promise)
-], AdminController.prototype, "createAdmin", null);
-exports.AdminController = AdminController = __decorate([
-    (0, common_1.Controller)({ path: '/admin' }),
-    (0, common_1.UseGuards)(userAuthorization_middleware_1.UserAuthorizationMiddleware),
-    __metadata("design:paramtypes", [service_1.UserService])
-], AdminController);
-let DriverController = class DriverController {
-    constructor(userService) {
-        this.userService = userService;
-    }
-    async createDriver(body) {
-        try {
-            body.role = 'Driver';
-            const result = await this.userService.CreateDriver(body);
-            return result;
-        }
-        catch (err) {
-            if (err instanceof shared_1.UserAlreadyExists) {
-                throw new common_1.BadRequestException(err.message);
-            }
-            throw err;
-        }
-    }
-};
-exports.DriverController = DriverController;
-__decorate([
-    (0, common_1.Post)('/'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [models_1.DriverDto]),
-    __metadata("design:returntype", Promise)
-], DriverController.prototype, "createDriver", null);
-exports.DriverController = DriverController = __decorate([
-    (0, common_1.Controller)({ path: '/drivers' }),
-    __metadata("design:paramtypes", [service_1.UserService])
-], DriverController);
 //# sourceMappingURL=users.controller.js.map

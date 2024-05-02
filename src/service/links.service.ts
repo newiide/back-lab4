@@ -6,10 +6,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
 import { LinkNotFound, ExpiredLink, NoExpiration } from '../shared';
 
-function setExpirationDate(days) {
-  const expiredAt = new Date()
-  expiredAt.setDate(expiredAt.getDate() + days);
-  return expiredAt
+function setExpirationTime(days=0) {
+  const today = new Date();
+  return new Date(today.setDate(today.getDate() + days));
 }
 
 @Injectable()
@@ -20,14 +19,11 @@ export class LinkService {
   ) {}
 
   async createLink(body: LinkDto & { email: string }) {
-    const shortLink = randomUUID().replace(/-/g, '').slice(0, -17);
+    const shorterLink = randomUUID().slice(0, -12);
     const days = 5;
-    const expiredAt = setExpirationDate(days);
+    const expiredAt = setExpirationTime(days);
     const doc = new this.linkModel({
-      ...body,
-      originalLink: body.originalLink,
-      shortLink: shortLink,
-      expiredAt: expiredAt,
+      ...body, originalLink: body.originalLink, shortLink: shorterLink, expiredAt: expiredAt,
     });
     const links = await doc.save();
 
@@ -38,9 +34,7 @@ export class LinkService {
     const data = JSON.parse(query.expiredAt);
 
     if (!data.gt && !data.lt) {
-      throw new NoExpiration('There is any expiration date mentions, please try again!')
-    }
-
+      throw new NoExpiration('There is any expiration date')}
     if (data.gt && data.lt) {
       const ltAndGtExpirationDate = await this.linkModel.aggregate([
         {
@@ -50,9 +44,8 @@ export class LinkService {
           },
         },
       ]);
-      return ltAndGtExpirationDate
+      return ltAndGtExpirationDate 
     }
-
     if (data.gt) {
       const gtExpirationDate = await this.linkModel.aggregate([
         {
@@ -64,7 +57,6 @@ export class LinkService {
       ]);
       return gtExpirationDate
     }
-    
     if (data.lt) {
       const ltExpirationDate = await this.linkModel.aggregate([
         {
@@ -78,16 +70,13 @@ export class LinkService {
     }
   }
 
-  async getLink(cut, user) {
-    const originalLink = await this.linkModel.findOne({ shortLink: cut });
-    const now = setExpirationDate(0);
-    if (originalLink.expiredAt < now) {
-      throw new ExpiredLink('Link was expired')
-    }
-    
-    if (!originalLink) {
-      throw new LinkNotFound('Short link was not found');
-    }
-    return originalLink.originalLink;
+  async getLink(cut) {
+    const longLink = await this.linkModel.findOne({ shortLink: cut });
+    const today = setExpirationTime();
+    if (longLink.expiredAt < today) {
+      throw new ExpiredLink('Link was expired')}
+    if (!longLink) {
+      throw new LinkNotFound('Shorter link was not found');}
+    return longLink.originalLink;
   }
 }

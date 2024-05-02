@@ -6,10 +6,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { UserAlreadyExists, UserNotFound } from '../shared';
 import { randomUUID } from 'crypto';
 
-export function setExpirationDate(days) {
-  const expiredAt = new Date()
-  expiredAt.setDate(expiredAt.getDate() + days);
-  return expiredAt
+function setExpirationTime(days=0) {
+  const today = new Date();
+  return new Date(today.setDate(today.getDate() + days));
 }
 
 @Injectable()
@@ -27,7 +26,7 @@ export class UserService {
     if (isExists) {
       throw new UserAlreadyExists(`This ${body.email} email is already in use`);
     }
-    const creationTime = setExpirationDate(0)
+    const creationTime = setExpirationTime()
     body.token = randomUUID();
     
     body.creationTime = creationTime

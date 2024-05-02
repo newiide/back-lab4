@@ -22,22 +22,17 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Types, Document } from 'mongoose';
-interface Location {
-    longitude: number;
-    latitude: number;
+import { LinkDto } from '../models/link.dto';
+import { Links, LinksDoc } from '../schema/links.schema';
+import { Model } from 'mongoose';
+export declare class LinkService {
+    private readonly linkModel;
+    constructor(linkModel: Model<LinksDoc>);
+    createLink(body: LinkDto & {
+        email: string;
+    }): Promise<import("mongoose").Document<unknown, {}, LinksDoc> & Links & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
+    getExpired(query: any, user: any): Promise<any[]>;
+    getLink(cut: any, user: any): Promise<string>;
 }
-export declare class Addresses {
-    name: string;
-    location: Location;
-}
-export declare const AddressesSchema: import("mongoose").Schema<Addresses, import("mongoose").Model<Addresses, any, any, any, Document<unknown, any, Addresses> & Addresses & {
-    _id: Types.ObjectId;
-}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Addresses, Document<unknown, {}, import("mongoose").FlatRecord<Addresses>> & import("mongoose").FlatRecord<Addresses> & {
-    _id: Types.ObjectId;
-}>;
-export type AddressesLeanDoc = Addresses & {
-    _id: Types.ObjectId;
-};
-export type AddressesDoc = Addresses & Document;
-export {};

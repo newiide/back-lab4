@@ -24,31 +24,17 @@
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
 import { UserService } from '../service';
-import { LoginDto, UserDto, AdminDto, DriverDto } from '../models';
+import { LoginDto, UserDto } from '../models';
 export declare class UsersController {
     private readonly userService;
     constructor(userService: UserService);
     createUser(body: UserDto): Promise<import("../schema").Users & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    login(body: LoginDto): Promise<{
-        token: string;
+    login(body: LoginDto): Promise<import("../schema").Users & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
     }>;
     getAllUsers(): Promise<(import("../schema").Users & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     })[]>;
-}
-export declare class AdminController {
-    private readonly userService;
-    constructor(userService: UserService);
-    createAdmin(body: AdminDto, req: Request): Promise<import("../schema").Users & import("mongoose").Document<any, any, any> & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
-}
-export declare class DriverController {
-    private readonly userService;
-    constructor(userService: UserService);
-    createDriver(body: DriverDto): Promise<import("../schema").Users & import("mongoose").Document<any, any, any> & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
 }

@@ -22,26 +22,19 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Model } from 'mongoose';
-import { OrderDto } from '../models';
-import { OrdersDoc } from '../schema';
-import { AddressesService } from './addresses.service';
-export declare class OrderService {
-    private readonly orderModel;
-    private readonly addressesService;
-    constructor(orderModel: Model<OrdersDoc>, addressesService: AddressesService);
-    createOrder(body: OrderDto & {
-        login: string;
-    }): Promise<OrdersDoc>;
-    calculateDistance(fromLoc: any, toLoc: any): number;
-    determinePrice(type: string, distance: number): number;
-    getOrders(userLogin: string, userRole: string): Promise<OrdersDoc[]>;
-    updateOrderStatus(orderId: string, newStatus: string, userRole: string): Promise<{
-        message: string;
-    }>;
-    getRecentFromAddresses(userLogin: string): Promise<string[]>;
-    getRecentToAddresses(userLogin: string): Promise<string[]>;
-    getRecentAddresses(login: string, addressType: 'from' | 'to', limit: number): Promise<string[]>;
-    getLowestPrice(login: string): Promise<OrderDto | null>;
-    getBiggestPrice(login: string): Promise<OrderDto | null>;
+import { Types, Document } from 'mongoose';
+export declare class Links {
+    email: string;
+    originalLink: string;
+    shortLink: string;
+    expiredAt: Date;
 }
+export declare const LinksSchema: import("mongoose").Schema<Links, import("mongoose").Model<Links, any, any, any, Document<unknown, any, Links> & Links & {
+    _id: Types.ObjectId;
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, Links, Document<unknown, {}, import("mongoose").FlatRecord<Links>> & import("mongoose").FlatRecord<Links> & {
+    _id: Types.ObjectId;
+}>;
+export type LinksLeanDoc = Links & {
+    _id: Types.ObjectId;
+};
+export type LinksDoc = Links & Document;

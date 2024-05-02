@@ -11,8 +11,8 @@ import { LinkService } from './service/links.service';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      'mongodb+srv://newide:4errty09nmcfg@ihatemylife.jrambdc.mongodb.net/?retryWrites=true&w=majority&appName=Ihatemylife',
-      { dbName: 'ihatemylife' },
+      'mongodb+srv://newide:4errty09nmcfg@chebyreki.toyzjn7.mongodb.net/',
+      { dbName: 'chebyreki' },
     ),
     MongooseModule.forFeature([
       {

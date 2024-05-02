@@ -9,21 +9,30 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AddressesSchema = exports.Addresses = void 0;
+exports.LinksSchema = exports.Links = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
-let Addresses = class Addresses {
+let Links = class Links {
 };
-exports.Addresses = Addresses;
+exports.Links = Links;
 __decorate([
     (0, mongoose_1.Prop)({ type: String, required: true }),
     __metadata("design:type", String)
-], Addresses.prototype, "name", void 0);
+], Links.prototype, "email", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: Object, required: true }),
-    __metadata("design:type", Object)
-], Addresses.prototype, "location", void 0);
-exports.Addresses = Addresses = __decorate([
-    (0, mongoose_1.Schema)({ collection: 'addresses' })
-], Addresses);
-exports.AddressesSchema = mongoose_1.SchemaFactory.createForClass(Addresses);
-//# sourceMappingURL=addresses.schema.js.map
+    (0, mongoose_1.Prop)({ type: String, required: true }),
+    __metadata("design:type", String)
+], Links.prototype, "originalLink", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, required: true }),
+    __metadata("design:type", String)
+], Links.prototype, "shortLink", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Date, required: true }),
+    __metadata("design:type", Date)
+], Links.prototype, "expiredAt", void 0);
+exports.Links = Links = __decorate([
+    (0, mongoose_1.Schema)({ collection: 'links' })
+], Links);
+exports.LinksSchema = mongoose_1.SchemaFactory.createForClass(Links);
+exports.LinksSchema.index({ expiredAt: 1 }, { expireAfterSeconds: 0 });
+//# sourceMappingURL=links.schema.js.map

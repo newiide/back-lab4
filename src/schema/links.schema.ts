@@ -17,8 +17,5 @@ export class Links {
 }
 
 export const LinksSchema = SchemaFactory.createForClass(Links);
-
-LinksSchema.index({ expiredAt: 1 }, { expireAfterSeconds: 0 });
-
 export type LinksLeanDoc = Links & { _id: Types.ObjectId };
 export type LinksDoc = Links & Document;

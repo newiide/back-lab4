@@ -74,7 +74,7 @@ export class OrdersController {
   ) {
     try {
       const { user } = req;
-      const originalLink = await this.linkService.getLink(cut, user);
+      const originalLink = await this.linkService.getLink(cut);
       return res.redirect(originalLink);
     } catch (err) {
       throw new BadRequestException(err.message);

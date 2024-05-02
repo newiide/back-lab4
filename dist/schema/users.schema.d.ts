@@ -24,12 +24,10 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { Types, Document } from 'mongoose';
 export declare class Users {
-    firstName: string;
-    lastName: string;
-    login: string;
+    email: string;
     password: string;
-    token?: string;
-    role?: string;
+    token: string;
+    creationTime: Date;
 }
 export declare const UserSchema: import("mongoose").Schema<Users, import("mongoose").Model<Users, any, any, any, Document<unknown, any, Users> & Users & {
     _id: Types.ObjectId;

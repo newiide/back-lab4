@@ -24,11 +24,11 @@ let UserAuthorizationMiddleware = class UserAuthorizationMiddleware {
     async use(req, res, next) {
         const { authorization } = req.headers;
         if (!authorization) {
-            throw new common_1.UnauthorizedException(`User do not provide token`);
+            throw new common_1.UnauthorizedException(`User do not provide authorization token`);
         }
         const user = await this.userModel.findOne({ token: authorization });
         if (!user) {
-            throw new common_1.BadRequestException(`User with this token was not found`);
+            throw new common_1.BadRequestException(`User with such authorization token was not found`);
         }
         req.user = user.toObject();
         next();
@@ -40,4 +40,4 @@ exports.UserAuthorizationMiddleware = UserAuthorizationMiddleware = __decorate([
     __param(0, (0, mongoose_1.InjectModel)(schema_1.Users.name)),
     __metadata("design:paramtypes", [mongoose_2.Model])
 ], UserAuthorizationMiddleware);
-//# sourceMappingURL=userAuthorization.middleware.js.map
+//# sourceMappingURL=authorization.js.map

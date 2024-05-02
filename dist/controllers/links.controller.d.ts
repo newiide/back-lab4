@@ -21,11 +21,32 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Model } from 'mongoose';
-import { AddressesDoc } from '../schema';
-export declare class AddressesService {
-    private readonly addressModel;
-    constructor(addressModel: Model<AddressesDoc>);
-    createAddress(addressDto: any): Promise<AddressesDoc>;
+import { LinkService } from '../service/links.service';
+import { LinkDto } from '../models';
+import { UserLeanDoc } from '../schema/users.schema';
+import { Response } from 'express';
+declare class LinkExpiredAtQuery {
+    lt: Date;
+    gt: Date;
 }
+declare class LinkQuery {
+    expiredAt: LinkExpiredAtQuery;
+}
+export declare class OrdersController {
+    private readonly linkService;
+    constructor(linkService: LinkService);
+    createLink(body: LinkDto, req: Request & {
+        user: UserLeanDoc;
+    }): Promise<import("mongoose").Document<unknown, {}, import("../schema").LinksDoc> & import("../schema").Links & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
+    getExpired(query: LinkQuery, req: Request & {
+        user: UserLeanDoc;
+    }): Promise<any[]>;
+    getLink(res: Response, cut: string, req: Request & {
+        user: UserLeanDoc;
+    }): Promise<void>;
+}
+export {};

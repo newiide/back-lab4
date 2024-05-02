@@ -22,23 +22,20 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { LoginDto, UserDto, DriverDto, AdminDto } from '../models';
+import { LoginDto, UserDto } from '../models';
 import { UserDoc, Users } from '../schema';
 import { Model } from 'mongoose';
+export declare function setExpirationDate(days: any): Date;
 export declare class UserService {
     private readonly userModel;
     constructor(userModel: Model<UserDoc>);
     createUser(body: UserDto): Promise<Users & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    login(body: LoginDto): Promise<string>;
+    login(body: LoginDto): Promise<Users & import("mongoose").Document<any, any, any> & {
+        _id: import("mongoose").Types.ObjectId;
+    }>;
     getAllUsers(): Promise<(Users & import("mongoose").Document<any, any, any> & {
         _id: import("mongoose").Types.ObjectId;
     })[]>;
-    CreateAdmin(body: AdminDto): Promise<Users & import("mongoose").Document<any, any, any> & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
-    CreateDriver(body: DriverDto): Promise<Users & import("mongoose").Document<any, any, any> & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
 }

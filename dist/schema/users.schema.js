@@ -17,27 +17,19 @@ exports.Users = Users;
 __decorate([
     (0, mongoose_1.Prop)({ type: String, required: true }),
     __metadata("design:type", String)
-], Users.prototype, "firstName", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: String, required: true }),
-    __metadata("design:type", String)
-], Users.prototype, "lastName", void 0);
-__decorate([
-    (0, mongoose_1.Prop)({ type: String, required: true }),
-    __metadata("design:type", String)
-], Users.prototype, "login", void 0);
+], Users.prototype, "email", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String, required: true }),
     __metadata("design:type", String)
 ], Users.prototype, "password", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String, required: false }),
+    (0, mongoose_1.Prop)({ type: String, required: true }),
     __metadata("design:type", String)
 ], Users.prototype, "token", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String, required: false }),
-    __metadata("design:type", String)
-], Users.prototype, "role", void 0);
+    (0, mongoose_1.Prop)({ type: Date, required: true }),
+    __metadata("design:type", Date)
+], Users.prototype, "creationTime", void 0);
 exports.Users = Users = __decorate([
     (0, mongoose_1.Schema)({ collection: 'users' })
 ], Users);
